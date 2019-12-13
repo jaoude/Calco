@@ -29,51 +29,49 @@
         private void InitializeComponent()
         {
             this.btnLoad = new System.Windows.Forms.Button();
-            this.btnSolve = new System.Windows.Forms.Button();
-            this.dataGridViewBoard = new System.Windows.Forms.DataGridView();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewBoard)).BeginInit();
+            this.btnClear = new System.Windows.Forms.Button();
+            this.dgvBoard = new System.Windows.Forms.DataGridView();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvBoard)).BeginInit();
             this.SuspendLayout();
             // 
             // btnLoad
             // 
-            this.btnLoad.Location = new System.Drawing.Point(52, 410);
+            this.btnLoad.Location = new System.Drawing.Point(17, 357);
             this.btnLoad.Name = "btnLoad";
-            this.btnLoad.Size = new System.Drawing.Size(75, 23);
+            this.btnLoad.Size = new System.Drawing.Size(77, 26);
             this.btnLoad.TabIndex = 0;
             this.btnLoad.Text = "Load";
             this.btnLoad.UseVisualStyleBackColor = true;
-            this.btnLoad.Click += new System.EventHandler(this.btnLoad_Click);
             // 
-            // btnSolve
+            // btnClear
             // 
-            this.btnSolve.Location = new System.Drawing.Point(310, 410);
-            this.btnSolve.Name = "btnSolve";
-            this.btnSolve.Size = new System.Drawing.Size(75, 23);
-            this.btnSolve.TabIndex = 1;
-            this.btnSolve.Text = "Solve";
-            this.btnSolve.UseVisualStyleBackColor = true;
+            this.btnClear.Location = new System.Drawing.Point(100, 357);
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(77, 26);
+            this.btnClear.TabIndex = 1;
+            this.btnClear.Text = "Clear";
+            this.btnClear.UseVisualStyleBackColor = true;
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
             // 
-            // dataGridViewBoard
+            // dgvBoard
             // 
-            this.dataGridViewBoard.AllowUserToAddRows = false;
-            this.dataGridViewBoard.AllowUserToDeleteRows = false;
-            this.dataGridViewBoard.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridViewBoard.Location = new System.Drawing.Point(12, 12);
-            this.dataGridViewBoard.Name = "dataGridViewBoard";
-            //this.dataGridViewBoard.Size = new System.Drawing.Size(320, 289);
-            this.dataGridViewBoard.TabIndex = 2;
+            this.dgvBoard.Location = new System.Drawing.Point(0, 0);
+            this.dgvBoard.Name = "dgvBoard";
+            this.dgvBoard.Size = new System.Drawing.Size(240, 150);
+            this.dgvBoard.TabIndex = 0;
             // 
-            // frmSudoku
+            // FrmSudoku
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(460, 460);
-            this.Controls.Add(this.dataGridViewBoard);
-            this.Controls.Add(this.btnSolve);
+            this.ClientSize = new System.Drawing.Size(364, 400);
+            this.Controls.Add(this.dgvBoard);
+            this.Controls.Add(this.btnClear);
             this.Controls.Add(this.btnLoad);
-            this.Name = "frmSudoku";
-            this.Text = "Sudoku";
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewBoard)).EndInit();
+            this.Margin = new System.Windows.Forms.Padding(2);
+            this.Name = "FrmSudoku";
+            this.Text = "Calco Sudoku";
+            ((System.ComponentModel.ISupportInitialize)(this.dgvBoard)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -81,8 +79,8 @@
         #endregion
 
         private System.Windows.Forms.Button btnLoad;
-        private System.Windows.Forms.Button btnSolve;
-        private System.Windows.Forms.DataGridView dataGridViewBoard;
+        private System.Windows.Forms.Button btnClear;
+        private System.Windows.Forms.DataGridView dgvBoard;
     }
 }
 
