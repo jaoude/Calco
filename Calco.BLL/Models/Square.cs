@@ -37,10 +37,5 @@
                 else return 5;
             }
         }
-
-        public bool IsNull()
-        {
-            return !this.Val.HasValue;
-        }
     }
 }

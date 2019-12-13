@@ -6,10 +6,12 @@ using Tesseract;
 
 namespace Calco.BLL.Helpers
 {
-    public class BoardLoadHelper : IBoardLoadHelper
+    public class LoadHelper : ILoadHelper
     {
         private readonly string _dataFile = "tessdata";
         private readonly string _lang = "eng";
+
+        
 
         public string DoOCR()
 

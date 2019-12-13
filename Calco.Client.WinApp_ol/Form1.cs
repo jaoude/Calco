@@ -8,14 +8,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Calco.WinClient
+namespace Calco.Client.WinApp
 {
-    public partial class Form1 : Form
+    public partial class frmSudoku : Form
     {
-        public Form1()
+        public frmSudoku()
         {
             InitializeComponent();
         }
 
+        private void btnLoad_Click(object sender, EventArgs e)
+        {
+            
+        }
     }
 }

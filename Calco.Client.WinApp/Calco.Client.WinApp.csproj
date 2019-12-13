@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Calco.BLL\Calco.BLL.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Calco.BLL">
+      <HintPath>..\Calco.BLL\bin\Debug\netcoreapp3.1\Calco.BLL.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
