@@ -12,7 +12,7 @@ namespace Calco.Client.WinApp
 {
     public partial class FrmSudoku : Form
     {
-        public void InitializeBoard()
+        public void InitializeBoard(DataTable dt)
         {
             const int cColWidth = 35;
             const int cRowHeigth = 35;
@@ -47,6 +47,14 @@ namespace Calco.Client.WinApp
                 row.Height = cRowHeigth;
                 this.dgvBoard.Rows.Add(row);
             }
+
+            if (dt != null)
+            {
+                for (int i = 0; i < cMaxCell; i++)
+                    for (int j = 0; j < cMaxCell; j++)
+                        this.dgvBoard.Rows[i].Cells[j].Value = dt.Rows[i][j];
+            }
+
             // mark the 9 square areas consisting of 9 cells
             this.dgvBoard.Columns[2].DividerWidth = 2;
             this.dgvBoard.Columns[5].DividerWidth = 2;
@@ -56,20 +64,55 @@ namespace Calco.Client.WinApp
         public FrmSudoku()
         {
             InitializeComponent();
-            InitializeBoard();
+            InitializeBoard(null);
+            this.dgvBoard.ClearSelection();
             Controls.Add(this.dgvBoard);
         }
         private void btnClear_Click(object sender, EventArgs e)
         {
             dgvBoard.DataSource = null;
-            for (int i = 0; i < dgvBoard.Columns.Count; i++)
+            dgvBoard.Rows.Clear();
+            dgvBoard.Columns.Clear();
+            InitializeBoard(null);
+            this.dgvBoard.ClearSelection();
+        }
+
+        private void btnLoad_Click(object sender, EventArgs e)
+        {
+            dgvBoard.DataSource = null;
+            dgvBoard.Rows.Clear();
+            dgvBoard.Columns.Clear();
+            InitializeBoard(null);
+
+            Data.Init();
+            InitializeBoard(Data.dt1);
+            this.dgvBoard.ClearSelection();
+
+            foreach (DataGridViewRow row in this.dgvBoard.Rows)
             {
-                for (int j = 0; j < dgvBoard.Rows.Count; j++)
+                foreach (DataGridViewCell cell in row.Cells)
                 {
-                    dgvBoard.Rows[j].Cells[i].Value = DBNull.Value;
+                    if (cell.Value != null && !string.IsNullOrEmpty(cell.Value.ToString()))
+                    {
+                        cell.Style.BackColor = Color.LightGray;
+                        cell.ReadOnly = true;
+                    }
                 }
             }
-            dgvBoard.Refresh();
+        }
+
+
+        private void dgvBoard_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar != '.')
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void dgvBoard_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
+        {
+            e.Control.KeyPress += new KeyPressEventHandler(dgvBoard_KeyPress);
         }
     }
 }
