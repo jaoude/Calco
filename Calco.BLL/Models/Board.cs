@@ -6,13 +6,14 @@ namespace Calco.BLL.Models
 {
     public class Board
     {
-        private List<Square> Squares = new List<Square>();
+        public List<Square> Squares { get; set; }
         private List<int> _possibleValues = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
         private int BoardNumberOfSquares = 81;
 
         #region  Constructor
         public Board(int?[,] a)
         {
+            Squares = new List<Square>();
             for (int i = 0; i < 9; i++)
             {
                 for (int j = 0; j < 9; j++)
@@ -23,37 +24,23 @@ namespace Calco.BLL.Models
         }
         #endregion
 
-        public void Solve()
+
+        public bool IsValid()
         {
-            foreach (var square in Squares)
+            foreach (var square in this.Squares)
             {
-                var list = GetAllowedValues(square);
+                if (Squares.Where(sq => sq.Row == square.Row && sq.Val.HasValue).GroupBy(n => n.Val).Any(c => c.Count() > 1)
+                    || Squares.Where(sq => sq.Col == square.Col && sq.Val.HasValue).GroupBy(n => n.Val).Any(c => c.Count() > 1)
+                    || Squares.Where(sq => sq.Box == square.Box && sq.Val.HasValue).GroupBy(n => n.Val).Any(c => c.Count() > 1))
+                    return false;
+                
+                //var allowedValues = GetAllowedValues(square);
+                //if(allowedValues != null && allowedValues.Count < 1)
+                //    return false;
             }
+            return true;
         }
 
-        public void Guess(Square square)
-        {
-            if (!square.Val.HasValue)
-            {
-                square.Val = _possibleValues.FirstOrDefault(val => Validate());
-            }
-        }
-
-        public bool IsValid(Square square)
-        {
-            if (Squares.Where(sq => sq.Row == square.Row && sq.Val.HasValue).GroupBy(n => n.Val).Any(c => c.Count() > 1)
-                || Squares.Where(sq => sq.Col == square.Col && sq.Val.HasValue).GroupBy(n => n.Val).Any(c => c.Count() > 1)
-                || Squares.Where(sq => sq.Box == square.Box && sq.Val.HasValue).GroupBy(n => n.Val).Any(c => c.Count() > 1))
-                return false;
-            else
-                return true;
-        }
-
-        public bool Validate()
-        {
-            return false;
-            // return Squares.Sum(sq => IsValid(sq) == true);
-        }
 
         public override string ToString()
         {
@@ -81,10 +68,11 @@ namespace Calco.BLL.Models
             foreach(int val in _possibleValues)
             {
                 square.Val = val;
-                if (IsValid(square))
+                if (this.IsValid())
                 {
                     allowedValues.Add(val);
                 }
+                square.Val = null;
             }
 
             return allowedValues;

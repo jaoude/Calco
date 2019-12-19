@@ -1,4 +1,5 @@
-﻿using Calco.BLL.Models;
+﻿using Calco.BLL.Helpers;
+using Calco.BLL.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -110,14 +111,16 @@ namespace Calco.Client.WinApp
                 if (i.IsNewRow) continue;
                 foreach (DataGridViewCell j in i.Cells)
                 {
-                    int? val = null;
-                    if(j.Value != null)
-                        val = (int?)j.Value;
-                    array[j.RowIndex, j.ColumnIndex] = int.val;
+                    if (j.Value == null || string.IsNullOrEmpty(j.Value.ToString()))
+                        array[j.RowIndex, j.ColumnIndex] = null;
+                    else
+                        array[j.RowIndex, j.ColumnIndex] = int.Parse(j.Value.ToString());
                 }
             }
 
             Board board = new Board(array);
+            // SolveHelper helper = new SolveHelper();
+            Solve(board, null, null, 0);
         }
 
         private void dgvBoard_KeyPress(object sender, KeyPressEventArgs e)
@@ -131,6 +134,41 @@ namespace Calco.Client.WinApp
         private void dgvBoard_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
             e.Control.KeyPress += new KeyPressEventHandler(dgvBoard_KeyPress);
+        }
+
+        public void Solve(Board board, Square square, List<int> values, int idx)
+        {
+            if (board.Squares.Count(sq => !sq.Val.HasValue) == 0)
+                return;
+
+            if (square == null)
+            {
+                square = board.Squares.FirstOrDefault(sq => !sq.Val.HasValue);
+                var allowedValues = board.GetAllowedValues(square);
+                Solve(board, square, allowedValues, 0);
+            }
+            square.Val = values[idx];
+            this.dgvBoard[square.Col, square.Row].Value = values[idx];
+            this.dgvBoard.Refresh();
+
+           
+            if (board.IsValid())
+            {
+                var squareNext = board.Squares.FirstOrDefault(sq => !sq.Val.HasValue);
+                var allowedValues = board.GetAllowedValues(squareNext);
+                if (allowedValues != null && allowedValues.Count > 0)
+                    Solve(board, squareNext, allowedValues, 0);
+                else
+                {
+                    idx++;
+                    Solve(board, square, values, idx);
+                }
+            }
+            else
+            {
+                idx++;
+                Solve(board, square, values, idx);
+            }
         }
     }
 }
