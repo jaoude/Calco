@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
-using Tesseract;
 
 namespace Calco.BLL.Helpers
 {
