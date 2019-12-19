@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Calco.BLL.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -61,6 +62,7 @@ namespace Calco.Client.WinApp
             this.dgvBoard.Rows[2].DividerHeight = 2;
             this.dgvBoard.Rows[5].DividerHeight = 2;
         }
+
         public FrmSudoku()
         {
             InitializeComponent();
@@ -68,6 +70,7 @@ namespace Calco.Client.WinApp
             this.dgvBoard.ClearSelection();
             Controls.Add(this.dgvBoard);
         }
+   
         private void btnClear_Click(object sender, EventArgs e)
         {
             dgvBoard.DataSource = null;
@@ -82,8 +85,6 @@ namespace Calco.Client.WinApp
             dgvBoard.DataSource = null;
             dgvBoard.Rows.Clear();
             dgvBoard.Columns.Clear();
-            InitializeBoard(null);
-
             Data.Init();
             InitializeBoard(Data.dt1);
             this.dgvBoard.ClearSelection();
@@ -101,6 +102,23 @@ namespace Calco.Client.WinApp
             }
         }
 
+        private void btnSolve_Click(object sender, EventArgs e)
+        {
+            var array = new int?[this.dgvBoard.RowCount, this.dgvBoard.ColumnCount];
+            foreach (DataGridViewRow i in this.dgvBoard.Rows)
+            {
+                if (i.IsNewRow) continue;
+                foreach (DataGridViewCell j in i.Cells)
+                {
+                    int? val = null;
+                    if(j.Value != null)
+                        val = (int?)j.Value;
+                    array[j.RowIndex, j.ColumnIndex] = int.val;
+                }
+            }
+
+            Board board = new Board(array);
+        }
 
         private void dgvBoard_KeyPress(object sender, KeyPressEventArgs e)
         {

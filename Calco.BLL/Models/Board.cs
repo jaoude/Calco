@@ -7,7 +7,7 @@ namespace Calco.BLL.Models
     public class Board
     {
         private List<Square> Squares = new List<Square>();
-        private List<int> _allowedVals = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+        private List<int> _possibleValues = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
         private int BoardNumberOfSquares = 81;
 
         #region  Constructor
@@ -25,30 +25,34 @@ namespace Calco.BLL.Models
 
         public void Solve()
         {
-            Squares.ForEach(sq => Guess(sq));
+            foreach (var square in Squares)
+            {
+                var list = GetAllowedValues(square);
+            }
         }
 
         public void Guess(Square square)
         {
             if (!square.Val.HasValue)
             {
-                square.Val = _allowedVals.FirstOrDefault(val => Validate());
+                square.Val = _possibleValues.FirstOrDefault(val => Validate());
             }
         }
 
-        public int IsValid(Square square)
+        public bool IsValid(Square square)
         {
             if (Squares.Where(sq => sq.Row == square.Row && sq.Val.HasValue).GroupBy(n => n.Val).Any(c => c.Count() > 1)
                 || Squares.Where(sq => sq.Col == square.Col && sq.Val.HasValue).GroupBy(n => n.Val).Any(c => c.Count() > 1)
                 || Squares.Where(sq => sq.Box == square.Box && sq.Val.HasValue).GroupBy(n => n.Val).Any(c => c.Count() > 1))
-                return 1;
+                return false;
             else
-                return 0;
+                return true;
         }
 
         public bool Validate()
         {
-            return Squares.Sum(sq => IsValid(sq)) == 0;
+            return false;
+            // return Squares.Sum(sq => IsValid(sq) == true);
         }
 
         public override string ToString()
@@ -65,6 +69,25 @@ namespace Calco.BLL.Models
             }
             string result = sb.ToString();
             return result;
+        }
+
+        public List<int> GetAllowedValues(Square square)
+        {
+            List<int> allowedValues = new List<int>();
+
+            if (square.Val.HasValue)
+                return null;
+
+            foreach(int val in _possibleValues)
+            {
+                square.Val = val;
+                if (IsValid(square))
+                {
+                    allowedValues.Add(val);
+                }
+            }
+
+            return allowedValues;
         }
     }
 }
