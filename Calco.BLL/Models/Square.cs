@@ -1,4 +1,6 @@
-﻿namespace Calco.BLL.Models
+﻿using System.Collections.Generic;
+
+namespace Calco.BLL.Models
 {
     public class Square
     {
@@ -6,7 +8,10 @@
         public int Row { get; set; }
         public int Col { get; set; }
         public int Box { get; set; }
+        
+        public List<int> AllowedValues { get; set; }
 
+        public int Idx { get; set; }
         public Square() { }
         public Square(int? val, int row, int col)
         {
@@ -14,6 +19,8 @@
             this.Row = row;
             this.Col = col;
             this.Box = GetBox(row, col);
+            AllowedValues = new List<int>();
+            Idx = 0;
         }
 
         private int GetBox(int row, int col)

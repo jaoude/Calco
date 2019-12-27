@@ -7,6 +7,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -120,7 +121,7 @@ namespace Calco.Client.WinApp
 
             Board board = new Board(array);
             // SolveHelper helper = new SolveHelper();
-            Solve(board, null, null, 0);
+            Solve(board);
         }
 
         private void dgvBoard_KeyPress(object sender, KeyPressEventArgs e)
@@ -136,38 +137,61 @@ namespace Calco.Client.WinApp
             e.Control.KeyPress += new KeyPressEventHandler(dgvBoard_KeyPress);
         }
 
-        public void Solve(Board board, Square square, List<int> values, int idx)
+
+        void WriteSquare(LinkedListNode<Square> square)
+        {
+            //Thread.Sleep(10);
+            this.dgvBoard[square.Value.Col, square.Value.Row].Value = square.Value.Val;
+            this.dgvBoard.Refresh();
+        }
+
+        public void Solve(Board board)
         {
             if (board.Squares.Count(sq => !sq.Val.HasValue) == 0)
                 return;
 
-            if (square == null)
-            {
-                square = board.Squares.FirstOrDefault(sq => !sq.Val.HasValue);
-                var allowedValues = board.GetAllowedValues(square);
-                Solve(board, square, allowedValues, 0);
-            }
-            square.Val = values[idx];
-            this.dgvBoard[square.Col, square.Row].Value = values[idx];
-            this.dgvBoard.Refresh();
+            var square = board.LinkedSquares.First;
+            square.Value.Idx = 0;
+            board.GetAllowedValues(square.Value);
+            square.Value.Val = square.Value.AllowedValues[square.Value.Idx];
+            WriteSquare(square);
+            ToNext(board, square);
+        }
 
-           
-            if (board.IsValid())
+        public void ToNext(Board board, LinkedListNode<Square> square)
+        {
+            var squareNext = square.Next;
+            squareNext.Value.Idx = 0;
+            board.GetAllowedValues(squareNext.Value);
+            if (!squareNext.Value.AllowedValues.Any())
             {
-                var squareNext = board.Squares.FirstOrDefault(sq => !sq.Val.HasValue);
-                var allowedValues = board.GetAllowedValues(squareNext);
-                if (allowedValues != null && allowedValues.Count > 0)
-                    Solve(board, squareNext, allowedValues, 0);
-                else
-                {
-                    idx++;
-                    Solve(board, square, values, idx);
-                }
+                //square.Value.Val = null;
+                //WriteSquare(square);
+                ToPrevious(board, squareNext);
             }
             else
             {
-                idx++;
-                Solve(board, square, values, idx);
+                squareNext.Value.Val = squareNext.Value.AllowedValues[squareNext.Value.Idx];
+                WriteSquare(squareNext);
+                ToNext(board, squareNext);
+            }
+        }
+
+        public void ToPrevious(Board board, LinkedListNode<Square> square)
+        {
+            square = square.Previous;
+            square.Value.Idx = square.Value.Idx + 1;
+            if (square.Value.Idx >= square.Value.AllowedValues.Count)
+            {
+                square.Value.Val = null;
+                WriteSquare(square);
+                ToPrevious(board, square);
+            }
+            else
+            {
+                square.Value.Val = square.Value.AllowedValues[square.Value.Idx];
+                WriteSquare(square);
+                ToNext(board, square);
             }
         }
     }

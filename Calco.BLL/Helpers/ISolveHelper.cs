@@ -7,6 +7,6 @@ namespace Calco.BLL.Helpers
 {
     public interface ISolveHelper
     {
-        void Solve(Board board, Square square, List<int> values, int idx);
+        //void Solve(Board board, Square square, List<int> values, int idx);
     }
 }
