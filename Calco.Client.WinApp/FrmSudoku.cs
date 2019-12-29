@@ -1,14 +1,10 @@
-﻿using Calco.BLL.Helpers;
-using Calco.BLL.Models;
+﻿using Calco.BLL.Models;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Calco.Client.WinApp
@@ -140,27 +136,40 @@ namespace Calco.Client.WinApp
 
         void WriteSquare(LinkedListNode<Square> square)
         {
-            //Thread.Sleep(10);
-            this.dgvBoard[square.Value.Col, square.Value.Row].Value = square.Value.Val;
-            this.dgvBoard.Refresh();
+            this.Invoke((MethodInvoker)delegate
+            {
+                this.dgvBoard[square.Value.Col, square.Value.Row].Value = square.Value.Val;
+                this.dgvBoard.Refresh();
+            });
         }
 
         public void Solve(Board board)
         {
-            if (board.Squares.Count(sq => !sq.Val.HasValue) == 0)
-                return;
+            var thread = new Thread(() =>
+            {
+                if (board.Squares.Count(sq => !sq.Val.HasValue) == 0)
+                    return;
 
-            var square = board.LinkedSquares.First;
-            square.Value.Idx = 0;
-            board.GetAllowedValues(square.Value);
-            square.Value.Val = square.Value.AllowedValues[square.Value.Idx];
-            WriteSquare(square);
-            ToNext(board, square);
+                var square = board.LinkedSquares.First;
+                square.Value.Idx = 0;
+                board.GetAllowedValues(square.Value);
+                square.Value.Val = square.Value.AllowedValues[square.Value.Idx];
+                WriteSquare(square);
+                ToNext(board, square);
+            });
+            thread.Start();
         }
 
         public void ToNext(Board board, LinkedListNode<Square> square)
         {
+            if (square == board.LinkedSquares.Last)
+            {
+                
+                return;
+            }
+
             var squareNext = square.Next;
+            
             squareNext.Value.Idx = 0;
             board.GetAllowedValues(squareNext.Value);
             if (!squareNext.Value.AllowedValues.Any())

@@ -1,5 +1,4 @@
-﻿using Calco.BLL.Helpers;
-using Calco.BLL.Models;
+﻿using Calco.BLL.Models;
 using System;
 
 namespace Calco.ConsoleClient
