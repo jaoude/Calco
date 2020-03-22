@@ -7,9 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Calco.BLL", "Calco.BLL\Calc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Calco.Tests", "Calco.Tests\Calco.Tests.csproj", "{BEF23FBF-7A4A-4FFF-9E80-F3B71F52EDBE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calco.Client.WinApp", "Calco.Client.WinApp\Calco.Client.WinApp.csproj", "{E9F96874-BAA1-464D-BA62-DF412C5224C3}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Calco.Client.Console", "Calco.Client.Console\Calco.Client.Console.csproj", "{A375D14C-9D59-476A-82B3-4CB7455321FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Calco.Client.WinApp", "Calco.Client.WinApp\Calco.Client.WinApp.csproj", "{E9F96874-BAA1-464D-BA62-DF412C5224C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +27,6 @@ Global
 		{E9F96874-BAA1-464D-BA62-DF412C5224C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E9F96874-BAA1-464D-BA62-DF412C5224C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E9F96874-BAA1-464D-BA62-DF412C5224C3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A375D14C-9D59-476A-82B3-4CB7455321FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A375D14C-9D59-476A-82B3-4CB7455321FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A375D14C-9D59-476A-82B3-4CB7455321FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A375D14C-9D59-476A-82B3-4CB7455321FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
