@@ -1,5 +1,4 @@
-﻿using Calco.BLL.Helpers;
-using Calco.BLL.Models;
+﻿using Calco.BLL.Models;
 using System;
 
 namespace Calco.ConsoleClient
@@ -27,18 +26,9 @@ namespace Calco.ConsoleClient
 
 
             Console.WriteLine("Hello World!");
-            //ILoadHelper load = new LoadHelper();
-            //Console.WriteLine(load.DoOCR());
             Board board = new Board(a);
 
             Console.WriteLine(board.ToString());
-            //_solveHelper.FillStartingGame(a);
-
-           ////_solveHelper.RunGame();
-           //Console.WriteLine(String.Format("|{0,3}|{1,1}|{2,1}|{3,1}|", 11, 22, 22, 22));
-           // Console.WriteLine("----------------------");
-           // Console.WriteLine(String.Format("|{0,1}|{1,1}|{2,1}|{3,1}|", 11, 22, 22, 22));
-           // Console.WriteLine(String.Format("|{0,1}|{1,1}|{2,1}|{3,1}|", 11, 22, 22, 22));
             Console.ReadKey();
         }
     }

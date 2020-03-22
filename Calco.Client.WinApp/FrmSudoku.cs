@@ -1,13 +1,9 @@
-﻿using Calco.BLL.Helpers;
-using Calco.BLL.Models;
+﻿using Calco.BLL.Models;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Calco.Client.WinApp
@@ -119,8 +115,7 @@ namespace Calco.Client.WinApp
             }
 
             Board board = new Board(array);
-            // SolveHelper helper = new SolveHelper();
-            Solve(board, null, null, 0);
+            Solve(board);
         }
 
         private void dgvBoard_KeyPress(object sender, KeyPressEventArgs e)
@@ -136,39 +131,45 @@ namespace Calco.Client.WinApp
             e.Control.KeyPress += new KeyPressEventHandler(dgvBoard_KeyPress);
         }
 
-        public void Solve(Board board, Square square, List<int> values, int idx)
+        private List<LinkedSquare> ApplySquaresWithOneSolution(Board board)
+        { 
+
+            return board.LinkedSquares
+                .Where( c => !c.Data.Val.HasValue)
+                .Where(c => board.GetAllowedValues(c.Data).Count == 1)
+                .ToList();
+        }
+
+        public void Solve(Board board/*, Square square, List<int> values, int idx*/)
         {
-            if (board.Squares.Count(sq => !sq.Val.HasValue) == 0)
+            var linkedSquare = board.LinkedSquares.FirstOrDefault(c => !c.Data.Val.HasValue);
+            if (linkedSquare == null)
+            {
+                MessageBox.Show("");
                 return;
-
-            if (square == null)
-            {
-                square = board.Squares.FirstOrDefault(sq => !sq.Val.HasValue);
-                var allowedValues = board.GetAllowedValues(square);
-                Solve(board, square, allowedValues, 0);
             }
-            square.Val = values[idx];
-            this.dgvBoard[square.Col, square.Row].Value = values[idx];
-            this.dgvBoard.Refresh();
-
-           
-            if (board.IsValid())
+            linkedSquare.Data.AllowedValues = new List<int>();
+            linkedSquare.Data.AllowedValues.AddRange(board.GetAllowedValues(linkedSquare.Data));
+            if (linkedSquare.Data.AllowedValues.Any() && linkedSquare.Data.Idx < linkedSquare.Data.AllowedValues.Count)
             {
-                var squareNext = board.Squares.FirstOrDefault(sq => !sq.Val.HasValue);
-                var allowedValues = board.GetAllowedValues(squareNext);
-                if (allowedValues != null && allowedValues.Count > 0)
-                    Solve(board, squareNext, allowedValues, 0);
-                else
-                {
-                    idx++;
-                    Solve(board, square, values, idx);
-                }
+                linkedSquare.Data.Val = linkedSquare.Data.AllowedValues[linkedSquare.Data.Idx];
+                UpdateUI(linkedSquare.Data, linkedSquare.Data.AllowedValues[linkedSquare.Data.Idx]);
+                linkedSquare.Data.Idx++;
+                Solve(board);
             }
             else
             {
-                idx++;
-                Solve(board, square, values, idx);
+                linkedSquare.Data.Idx = 0;
+                linkedSquare.Previous.Data.Val = null;
+                UpdateUI(linkedSquare.Previous.Data, null);
+                Solve(board);
             }
+        }
+      
+        public void UpdateUI(Square square, int? value)
+        {
+            this.dgvBoard[square.Col, square.Row].Value = value;
+            this.dgvBoard.Refresh();
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace Calco.BLL.Models
+﻿using System.Collections.Generic;
+
+namespace Calco.BLL.Models
 {
     public class Square
     {
@@ -7,12 +9,16 @@
         public int Col { get; set; }
         public int Box { get; set; }
 
+        public List<int> AllowedValues { get; set; }
+
+        public int Idx { get; set; }
         public Square() { }
         public Square(int? val, int row, int col)
         {
             this.Val = val;
             this.Row = row;
             this.Col = col;
+            AllowedValues = new List<int>();
             this.Box = GetBox(row, col);
         }
 
@@ -36,6 +42,24 @@
                 else if (col > 5) return 6;
                 else return 5;
             }
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0}", Val);
+        }
+    }
+
+    public class LinkedSquare
+    {
+        public Square Data { get; set; }
+        public LinkedSquare Previous { get; set; }
+        internal LinkedSquare Next { get; set; }
+        public LinkedSquare(Square data)
+        {
+            Data = data;
+            Previous = null;
+            Next = null;
         }
     }
 }

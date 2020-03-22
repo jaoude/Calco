@@ -7,6 +7,8 @@ namespace Calco.BLL.Models
     public class Board
     {
         public List<Square> Squares { get; set; }
+        public List<LinkedSquare> LinkedSquares { get; set; }
+
         private List<int> _possibleValues = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
         private int BoardNumberOfSquares = 81;
 
@@ -14,11 +16,30 @@ namespace Calco.BLL.Models
         public Board(int?[,] a)
         {
             Squares = new List<Square>();
+            LinkedSquares = new List<LinkedSquare>();
+
+
             for (int i = 0; i < 9; i++)
             {
                 for (int j = 0; j < 9; j++)
                 {
-                    Squares.Add(new Square(a[i, j], i, j));
+                    var square = new Square(a[i, j], i, j);
+                    Squares.Add(square);
+                }
+            }
+            
+            foreach ( var square in Squares.Where(c => !c.Val.HasValue).OrderBy(c => this.GetAllowedValues(c).Count).ToList())
+            {
+                if (!LinkedSquares.Any())
+                    LinkedSquares.Add(new LinkedSquare(square));
+                else
+                {
+                    var linkedSquare = new LinkedSquare(square);
+                    LinkedSquare lastLinkedSquare = LinkedSquares.Last();
+                    lastLinkedSquare.Next = linkedSquare;
+                    linkedSquare.Previous = lastLinkedSquare;
+
+                    LinkedSquares.Add(linkedSquare);
                 }
             }
         }
@@ -33,10 +54,6 @@ namespace Calco.BLL.Models
                     || Squares.Where(sq => sq.Col == square.Col && sq.Val.HasValue).GroupBy(n => n.Val).Any(c => c.Count() > 1)
                     || Squares.Where(sq => sq.Box == square.Box && sq.Val.HasValue).GroupBy(n => n.Val).Any(c => c.Count() > 1))
                     return false;
-                
-                //var allowedValues = GetAllowedValues(square);
-                //if(allowedValues != null && allowedValues.Count < 1)
-                //    return false;
             }
             return true;
         }
@@ -77,5 +94,6 @@ namespace Calco.BLL.Models
 
             return allowedValues;
         }
+
     }
 }
