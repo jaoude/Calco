@@ -18,17 +18,17 @@ namespace Calco.BLL.Models
             Squares = new List<Square>();
             LinkedSquares = new List<LinkedSquare>();
 
-
             for (int i = 0; i < 9; i++)
             {
                 for (int j = 0; j < 9; j++)
                 {
                     var square = new Square(a[i, j], i, j);
                     Squares.Add(square);
+                    square.AllowedValues = this.GetAllowedValues(square);
                 }
             }
             
-            foreach ( var square in Squares.Where(c => !c.Val.HasValue).OrderBy(c => this.GetAllowedValues(c).Count).ToList())
+            foreach ( var square in Squares.Where(c => !c.Val.HasValue).OrderBy(c => c.AllowedValues.Count).ToList())
             {
                 if (!LinkedSquares.Any())
                     LinkedSquares.Add(new LinkedSquare(square));

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Calco.Client.WinApp
@@ -115,7 +117,11 @@ namespace Calco.Client.WinApp
             }
 
             Board board = new Board(array);
-            Solve(board);
+
+            Task.Run(() => {
+                Solve(board);
+            });
+
         }
 
         private void dgvBoard_KeyPress(object sender, KeyPressEventArgs e)
@@ -140,7 +146,7 @@ namespace Calco.Client.WinApp
                 .ToList();
         }
 
-        public void Solve(Board board/*, Square square, List<int> values, int idx*/)
+        public void Solve(Board board)
         {
             var linkedSquare = board.LinkedSquares.FirstOrDefault(c => !c.Data.Val.HasValue);
             if (linkedSquare == null)
@@ -168,8 +174,21 @@ namespace Calco.Client.WinApp
       
         public void UpdateUI(Square square, int? value)
         {
-            this.dgvBoard[square.Col, square.Row].Value = value;
-            this.dgvBoard.Refresh();
+            // InvokeRequired required compares the thread ID of the
+            // calling thread to the thread ID of the creating thread.
+            // If these threads are different, it returns true.
+            if (this.dgvBoard.InvokeRequired)
+            {
+                UpdateCallBack d = new UpdateCallBack(UpdateUI);
+                this.Invoke(d, new object[] { square, value });
+            }
+            else
+            {
+                this.dgvBoard[square.Col, square.Row].Value = value;
+                this.dgvBoard.Refresh();
+            }
         }
+
+        delegate void UpdateCallBack (Square square, int? value);
     }
 }
