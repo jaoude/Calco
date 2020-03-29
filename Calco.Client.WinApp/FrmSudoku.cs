@@ -12,6 +12,9 @@ namespace Calco.Client.WinApp
 {
     public partial class FrmSudoku : Form
     {
+        delegate void UpdateCallBack(Square square, int? value);
+        static ManualResetEvent manualResetEvent = new ManualResetEvent(false);
+
         public void InitializeBoard(DataTable dt)
         {
             const int cColWidth = 35;
@@ -188,7 +191,5 @@ namespace Calco.Client.WinApp
                 this.dgvBoard.Refresh();
             }
         }
-
-        delegate void UpdateCallBack (Square square, int? value);
     }
 }

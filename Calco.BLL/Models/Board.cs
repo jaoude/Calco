@@ -4,19 +4,23 @@ using System.Text;
 
 namespace Calco.BLL.Models
 {
+   
     public class Board
     {
+        public static List<int> PossibleValues = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+        public static int BoardNumberOfSquares = 81;
+
+
         public List<Square> Squares { get; set; }
+        public Square[,] ArraySquares { get; set; }
         public List<LinkedSquare> LinkedSquares { get; set; }
-
-        private List<int> _possibleValues = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-        private int BoardNumberOfSquares = 81;
-
+     
         #region  Constructor
         public Board(int?[,] a)
         {
             Squares = new List<Square>();
             LinkedSquares = new List<LinkedSquare>();
+            ArraySquares = new Square[9, 9];
 
             for (int i = 0; i < 9; i++)
             {
@@ -24,6 +28,7 @@ namespace Calco.BLL.Models
                 {
                     var square = new Square(a[i, j], i, j);
                     Squares.Add(square);
+                    ArraySquares[i, j] = square;
                     square.AllowedValues = this.GetAllowedValues(square);
                 }
             }
@@ -59,21 +64,21 @@ namespace Calco.BLL.Models
         }
 
 
-        public override string ToString()
-        {
-            StringBuilder sb = new StringBuilder();
-            int idx = 0;
-            while (idx < BoardNumberOfSquares)
-            {
-                if (idx % 9 == 0)
-                    sb.Append(System.Environment.NewLine);
-                sb.Append(Squares[idx].Val.HasValue ? " " + Squares[idx].Val.ToString() + " " : string.Empty + "   ");
+        //public override string ToString()
+        //{
+        //    StringBuilder sb = new StringBuilder();
+        //    int idx = 0;
+        //    while (idx < BoardNumberOfSquares)
+        //    {
+        //        if (idx % 9 == 0)
+        //            sb.Append(System.Environment.NewLine);
+        //        sb.Append(Squares[idx].Val.HasValue ? " " + Squares[idx].Val.ToString() + " " : string.Empty + "   ");
 
-                idx++;
-            }
-            string result = sb.ToString();
-            return result;
-        }
+        //        idx++;
+        //    }
+        //    string result = sb.ToString();
+        //    return result;
+        //}
 
         public List<int> GetAllowedValues(Square square)
         {
@@ -82,7 +87,7 @@ namespace Calco.BLL.Models
             if (square.Val.HasValue)
                 return null;
 
-            foreach(int val in _possibleValues)
+            foreach(int val in PossibleValues)
             {
                 square.Val = val;
                 if (this.IsValid())

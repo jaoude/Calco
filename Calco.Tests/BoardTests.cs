@@ -30,20 +30,58 @@ namespace Calco.Tests
 
         }
 
+        //[Test]
+        //public void AssertTostringReturns()
+        //{
+        //    // Prepare
+        //    Setup();
+        //    Board board = new Board(a);
+
+        //    string expectedResult = "5  3        7
+        //                                 6        1  9  5
+        //                                    9  8              6
+        //                                 8           6           3
+        //                                 4        8     3        1
+        //                                 7           2           6
+        //                                    6              2  8
+        //                                          4  1  9        5
+        //                                             8        7  9 ";
+
+        //    //  Assert.Pass();
+        //    string actualResult = board.ToString();
+
+        //    // Assert
+        //    Assert.AreEqual(expectedResult, actualResult);
+
+        //}
+
         [Test]
-        public void AssertTostringReturns()
+        public void AssertIsValidReturnsTrue()
         {
             // Prepare
             Setup();
             Board board = new Board(a);
-
-            string expectedResult = "\r\n5\t3\t\t\t7\t\t\t\t\t\r\n6\t\t\t1\t9\t5\t\t\t\t\r\n\t9\t8\t\t\t\t\t6\t\t\r\n8\t\t\t\t6\t\t\t\t3\t\r\n4\t\t\t8\t\t3\t\t\t1\t\r\n7\t\t\t\t2\t\t\t\t6\t\r\n\t6\t\t\t\t\t2\t8\t\t\r\n\t\t\t4\t1\t9\t\t\t5\t\r\n\t\t\t\t8\t\t\t7\t9\t";
-
-            //  Assert.Pass();
-            string actualResult = board.ToString();
+            // 
+            var expectedResult = board.IsValid();
 
             // Assert
-            Assert.AreEqual(expectedResult, actualResult);
+            Assert.AreEqual(expectedResult, true);
+
+        }
+
+        [Test]
+        public void AssertIsValidReturnsFalse()
+        {
+            // Prepare
+            Setup();
+            Board board = new Board(a);
+            board.ArraySquares[0, 2].Val = 5;
+
+            // 
+            var expectedResult = board.IsValid();
+
+            // Assert
+            Assert.AreEqual(expectedResult, false);
 
         }
     }

@@ -18,7 +18,7 @@ namespace Calco.BLL.Models
             this.Val = val;
             this.Row = row;
             this.Col = col;
-            AllowedValues = new List<int>();
+            this.AllowedValues = new List<int>();
             this.Box = GetBox(row, col);
         }
 
