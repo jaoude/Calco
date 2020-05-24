@@ -1,4 +1,5 @@
 ﻿using Calco.BLL.Models;
+using Calco.Client.WinApp.Commands;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -11,6 +12,8 @@ namespace Calco.Client.WinApp
 {
     public partial class FrmSudoku : Form
     {
+        public AutoResetEvent autoResetEvent = new AutoResetEvent(false); 
+        
         public void InitializeBoard(DataTable dt)
         {
             const int cColWidth = 35;
@@ -134,7 +137,7 @@ namespace Calco.Client.WinApp
         }
 
 
-        void WriteSquare(LinkedListNode<Square> square)
+        public void WriteSquare(LinkedListNode<Square> square)
         {
             this.Invoke((MethodInvoker)delegate
             {
@@ -145,6 +148,9 @@ namespace Calco.Client.WinApp
 
         public void Solve(Board board)
         {
+            autoResetEvent.Reset();
+            autoResetEvent.WaitOne();
+
             var thread = new Thread(() =>
             {
                 if (board.Squares.Count(sq => !sq.Val.HasValue) == 0)
@@ -155,53 +161,10 @@ namespace Calco.Client.WinApp
                 board.GetAllowedValues(square.Value);
                 square.Value.Val = square.Value.AllowedValues[square.Value.Idx];
                 WriteSquare(square);
-                ToNext(board, square);
+                var manager = new CommandManager();
+                manager.Invoke(new ToNextCommand(board, square, manager, this));
             });
             thread.Start();
-        }
-
-        public void ToNext(Board board, LinkedListNode<Square> square)
-        {
-            if (square == board.LinkedSquares.Last)
-            {
-                
-                return;
-            }
-
-            var squareNext = square.Next;
-            
-            squareNext.Value.Idx = 0;
-            board.GetAllowedValues(squareNext.Value);
-            if (!squareNext.Value.AllowedValues.Any())
-            {
-                //square.Value.Val = null;
-                //WriteSquare(square);
-                ToPrevious(board, squareNext);
-            }
-            else
-            {
-                squareNext.Value.Val = squareNext.Value.AllowedValues[squareNext.Value.Idx];
-                WriteSquare(squareNext);
-                ToNext(board, squareNext);
-            }
-        }
-
-        public void ToPrevious(Board board, LinkedListNode<Square> square)
-        {
-            square = square.Previous;
-            square.Value.Idx = square.Value.Idx + 1;
-            if (square.Value.Idx >= square.Value.AllowedValues.Count)
-            {
-                square.Value.Val = null;
-                WriteSquare(square);
-                ToPrevious(board, square);
-            }
-            else
-            {
-                square.Value.Val = square.Value.AllowedValues[square.Value.Idx];
-                WriteSquare(square);
-                ToNext(board, square);
-            }
         }
     }
 }
