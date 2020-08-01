@@ -1,33 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using Calco.BLL.Commands;
+using Calco.BLL.Services;
+using Calco.BLL.Services.BoardValidator;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 namespace Calco.BLL.Models
 {
     public class Board
-    {
-        public List<Square> Squares { get; set; }
-        public LinkedList<Square> LinkedSquares { get; set; }
+    {     
+        protected internal List<Square> Squares { get; set; }
+        protected internal LinkedList<Square> LinkedSquares { get; set; }
 
-        private List<int> _possibleValues = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-
-        private int BoardNumberOfSquares = 81;
+        private readonly List<int> _possibleValues = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
         #region  Constructor
-        public Board(int?[,] a)
+        public Board(List<int?> values)
         {
-            Squares = new List<Square>();
+            Squares = new SudokuHelper().GetSquares(values);
             LinkedSquares = new LinkedList<Square>();
-            for (int i = 0; i < 9; i++)
-            {
-                for (int j = 0; j < 9; j++)
-                {
-                    var square = new Square(a[i, j], i, j);
-                    Squares.Add(square);
-                    if (!a[i, j].HasValue)
-                        LinkedSquares.AddLast(square);
-                }
-            }
+            Squares.Where(c => !c.Val.HasValue).ToList().ForEach(sqr => LinkedSquares.AddLast(sqr));
         }
         #endregion
 
@@ -42,23 +34,6 @@ namespace Calco.BLL.Models
                     return false;
             }
             return true;
-        }
-
-
-        public override string ToString()
-        {
-            StringBuilder sb = new StringBuilder();
-            int idx = 0;
-            while (idx < BoardNumberOfSquares)
-            {
-                if (idx % 9 == 0)
-                    sb.Append(System.Environment.NewLine);
-                sb.Append(Squares[idx].Val.HasValue ? " " + Squares[idx].Val.ToString() + " " : string.Empty + "   ");
-
-                idx++;
-            }
-            string result = sb.ToString();
-            return result;
         }
 
         public void GetAllowedValues(Square square)
@@ -77,6 +52,19 @@ namespace Calco.BLL.Models
                 }
                 square.Val = null;
             }
+        }
+
+        public void Solve()
+        {
+            if (Squares.Count(sq => !sq.Val.HasValue) == 0)
+                return;
+
+            var square = LinkedSquares.First;
+            square.Value.Idx = 0;
+            GetAllowedValues(square.Value);
+            square.Value.Val = square.Value.Val.HasValue ? square.Value.Val.Value : square.Value.AllowedValues[square.Value.Idx];
+            var manager = new CommandManager();
+            manager.Invoke(new ToNextCommand(this, square, manager));
         }
     }
 }

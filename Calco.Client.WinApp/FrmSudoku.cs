@@ -12,8 +12,7 @@ namespace Calco.Client.WinApp
 {
     public partial class FrmSudoku : Form
     {
-        public AutoResetEvent autoResetEvent = new AutoResetEvent(false); 
-        
+        Board board;
         public void InitializeBoard(DataTable dt)
         {
             const int cColWidth = 35;
@@ -118,7 +117,7 @@ namespace Calco.Client.WinApp
                 }
             }
 
-            Board board = new Board(array);
+            //board = new Board(array);
             // SolveHelper helper = new SolveHelper();
             Solve(board);
         }
@@ -136,20 +135,22 @@ namespace Calco.Client.WinApp
             e.Control.KeyPress += new KeyPressEventHandler(dgvBoard_KeyPress);
         }
 
-
         public void WriteSquare(LinkedListNode<Square> square)
         {
-            this.Invoke((MethodInvoker)delegate
+            if (this.board.WriteSquares)
             {
-                this.dgvBoard[square.Value.Col, square.Value.Row].Value = square.Value.Val;
-                this.dgvBoard.Refresh();
-            });
+                this.Invoke((MethodInvoker)delegate
+                {
+                    this.dgvBoard[square.Value.Col, square.Value.Row].Value = square.Value.Val;
+                    this.dgvBoard.Refresh();
+                });
+            }
         }
 
-        public void Solve(Board board)
+        public void Solve(Board board, bool writeSquares = true)
         {
-            autoResetEvent.Reset();
-            autoResetEvent.WaitOne();
+            //autoResetEvent.Reset();
+            //autoResetEvent.WaitOne();
 
             var thread = new Thread(() =>
             {

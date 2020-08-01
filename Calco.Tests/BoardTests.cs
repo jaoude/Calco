@@ -27,24 +27,6 @@ namespace Calco.Tests
             a[6, 1] = 6; a[6, 6] = 2; a[6, 7] = 8;
             a[7, 3] = 4; a[7, 4] = 1; a[7, 5] = 9; a[7, 8] = 5;
             a[8, 4] = 8; a[8, 7] = 7; a[8, 8] = 9;
-
-        }
-
-        [Test]
-        public void AssertTostringReturns()
-        {
-            // Prepare
-            Setup();
-            Board board = new Board(a);
-
-            string expectedResult = "\r\n5\t3\t\t\t7\t\t\t\t\t\r\n6\t\t\t1\t9\t5\t\t\t\t\r\n\t9\t8\t\t\t\t\t6\t\t\r\n8\t\t\t\t6\t\t\t\t3\t\r\n4\t\t\t8\t\t3\t\t\t1\t\r\n7\t\t\t\t2\t\t\t\t6\t\r\n\t6\t\t\t\t\t2\t8\t\t\r\n\t\t\t4\t1\t9\t\t\t5\t\r\n\t\t\t\t8\t\t\t7\t9\t";
-
-            //  Assert.Pass();
-            string actualResult = board.ToString();
-
-            // Assert
-            Assert.AreEqual(expectedResult, actualResult);
-
         }
     }
 }
