@@ -1,6 +1,6 @@
 ﻿using Calco.BLL.Commands;
 using Calco.BLL.Models;
-using Calco.BLL.Services.BoardValidator;
+using Calco.BLL.Services.Validator;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -13,20 +13,32 @@ namespace Calco.BLL.Services
 {
     public class SudokuSolver : ISudokuSolver
     {
-        public string Validate(List<int?> values)
+        public readonly ISudokuValidator _sudokuValidator;
+        public SudokuSolver(ISudokuValidator sudokuValidator)
         {
-            string error = new BoardValidator81Squares(values).IsValid()
-                    ?? new BoardValidatorRow(values).IsValid()
-                    ?? new BoardValidatorColumn(values).IsValid()
-                    ?? new BoardValidatorBox(values).IsValid();
-            return error;
+            _sudokuValidator = sudokuValidator;
         }
 
-        public List<int> Solve(List<int?> values)
+        public SudokuSolverResult Solve(List<int?> values)
         {
-            Board board = new Board(values);
+            var validate = _sudokuValidator.Validate(values);
+            if (!string.IsNullOrEmpty(validate))
+                return new SudokuSolverResult()
+                {
+                    Message = validate,
+                    Success = true,
+                    Solution = null
+                };
+
+            Board board = new Board(values.ToList());
             board.Solve();
-            return board.Squares.Select(c => c.Val.Value).ToList();
+
+            return new SudokuSolverResult()
+            {
+                Message = null,
+                Success = true,
+                Solution = board.Squares.Select(c => c.Val.Value).ToList()
+            };
         }
     }
 }

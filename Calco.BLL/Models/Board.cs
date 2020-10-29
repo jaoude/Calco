@@ -1,9 +1,7 @@
 ﻿using Calco.BLL.Commands;
 using Calco.BLL.Services;
-using Calco.BLL.Services.BoardValidator;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Calco.BLL.Models
 {

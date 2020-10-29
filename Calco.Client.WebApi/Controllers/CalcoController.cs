@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Calco.BLL.Dtos;
 using Calco.BLL.Services;
+using Calco.BLL.Services.Validator;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -14,23 +15,24 @@ namespace Calco.Client.WebApi.Controllers
     [Route("[controller]")]
     public class CalcoController : ControllerBase
     {
-        private readonly ILogger<WeatherForecastController> _logger;
-        private readonly ISudokuSolver _solver;
+        private readonly ILogger<CalcoController> _logger;
+        private readonly ISudokuSolver _sudokuSolver;
 
-        public CalcoController(ILogger<WeatherForecastController> logger, ISudokuSolver sudokuSolver)
+        public CalcoController(ILogger<CalcoController> logger, ISudokuSolver sudokuSolver)
         {
             _logger = logger;
-            _solver = sudokuSolver;
+            _sudokuSolver = sudokuSolver;
         }
 
         [HttpPost]
         public IActionResult Solve([FromBody] List<int?> values)
         {
-            string error = _solver.Validate(values);
-            if (!string.IsNullOrEmpty(error))
-                return BadRequest(new string(error));
+            var result = _sudokuSolver.Solve(values);
 
-            return Ok(_solver.Solve(values));
+            if(result.Success)
+                return Ok(result.Solution);
+            else
+                return BadRequest(result.Message);
         }
     }
 }

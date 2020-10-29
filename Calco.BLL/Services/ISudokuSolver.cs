@@ -2,14 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Net.Http;
 using System.Text;
 
 namespace Calco.BLL.Services
 {
     public interface ISudokuSolver
     {
-        List<int> Solve(List<int?> squareValues);
+        SudokuSolverResult Solve(List<int?> values);
 
-        string Validate(List<int?> values);
     }
 }

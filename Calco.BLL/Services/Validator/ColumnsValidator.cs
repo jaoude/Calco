@@ -2,15 +2,13 @@
 using System.Linq;
 using static Calco.Common.Constants;
 
-namespace Calco.BLL.Services.BoardValidator
+namespace Calco.BLL.Services.Validator
 {
-    public class BoardValidatorColumn : BoardValidatorArea
+    public class ColumnsValidator
     {
-        public BoardValidatorColumn(List<int?> values) : base(values) { }
-
-        public override string IsValid()
+        public string IsValid(List<int?> values)
         {
-            var duplicate = Squares
+            var duplicate = new SudokuHelper().GetSquares(values)
                 .Where(c => c.Val != null)
                 .GroupBy(c => new { c.Val, c.Col })
                 .Where(g => g.Count() > 1);

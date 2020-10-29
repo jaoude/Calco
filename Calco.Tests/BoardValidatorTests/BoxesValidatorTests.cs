@@ -1,24 +1,41 @@
-using Calco.BLL.Models;
+﻿using Calco.BLL.Models;
 using Calco.BLL.Services;
-using NUnit.Framework;
-using System;
+using Calco.BLL.Services.Validator;
+using FluentAssertions;
+using Moq;
 using System.Collections.Generic;
+using Xunit;
 using static Calco.Common.Constants;
 
-namespace Calco.Tests
+namespace Calco.Tests.BoardValidatorTests
 {
-    [TestFixture]
-    public class SudokuHelperTest
+    public class BoxesValidatorTest
     {
-        private readonly ISudokuHelper _sudokuHelper;
+        public BoxesValidatorTest() { }
 
-        public SudokuHelperTest() 
+        [Fact]
+        public void IsValid_ShouldReturnNull_WhenBoardIsValid()
         {
-            _sudokuHelper = new SudokuHelper();
+            // Prepare
+            List<int?> values = new List<int?>
+            {
+                5,      3,      4,      null,   7,      null,   null,   null,   null,
+                6,      null,   null,   1,      9,      5,      null,   null,   null,
+                null,   9,      8,      null,   null,   null,   null,   6,      null,
+                8,      null,   null,   null,   6,      null,   null,   null,   3,
+                4,      2,      6,      8,      5,      3,      7,      9,      1,
+                7,      null,   null,   null,   2,      null,   null,   null,   6,
+                null,   6,      null,   null,   null,   null,   2,      8,      null,
+                null,   null,   null,   4,      1,      9,      null,   null,   5,
+                null,   null,   null,   null,   8,      null,   null,   7,      9
+            };
+
+            // Act/ Assert
+            new BoxesValidator().IsValid(values).Should().BeNull();
         }
 
-        [Test]
-        public void ValidateGetSquaresWhenNot81ThrowException()
+        [Fact]
+        public void IsValid_ShouldReturnError_WhenBoardIsInValid()
         {
             // Prepare
             List<int?> values = new List<int?>
@@ -31,39 +48,11 @@ namespace Calco.Tests
                 7,      null,   null,   null,   2,      null,   null,   null,   6,
                 null,   6,      null,   null,   null,   null,   2,      8,      null,
                 null,   null,   null,   4,      1,      9,      null,   null,   5,
-                null,   null,   null,   null,   8,      null,   null,   7
+                null,   null,   null,   null,   8,      null,   5,      7,      9
             };
 
-            // Run and assert
-            var exception = Assert.Throws<NullReferenceException>(() => _sudokuHelper.GetSquares(values));
-            Assert.AreEqual(WRONG_NBR_OF_SQUARES_ERROR, exception.Message);
-        }
-
-
-        [Test]
-        public void ValidateGetSquaresWhen81Succeed()
-        {
-            // Prepare
-            List<int?> values = new List<int?>
-            {
-                5,      3,      4,      null,   7,      null,   null,   null,   null,
-                6,      null,   null,   1,      9,      5,      null,   null,   null,
-                5,      9,      8,      null,   null,   null,   null,   6,      null,
-                8,      null,   null,   null,   6,      null,   null,   null,   3,
-                4,      2,      6,      8,      5,      3,      7,      9,      1,
-                7,      null,   null,   null,   2,      null,   null,   null,   6,
-                null,   6,      null,   null,   null,   null,   2,      8,      null,
-                null,   null,   null,   4,      1,      9,      null,   null,   5,
-                null,   null,   null,   null,   8,      null,   null,   7,  null
-            };
-
-            // Sassine I need to build a list of 81 squares from the list of values above. Gimme a break
-            Assert.AreEqual(1, 1);
-            //List<Square> squres = new List<Square>() { 
-            //    new Square() {  }  
-            //}
-            // Run and assert
-            //Assert 
+            // Act/ Assert
+            new BoxesValidator().IsValid(values).Should().Be(DUPLICATES_IN_BOX_ERROR);
         }
     }
 }

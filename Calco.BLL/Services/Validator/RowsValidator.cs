@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using static Calco.Common.Constants;
 
-namespace Calco.BLL.Services.BoardValidator
+namespace Calco.BLL.Services.Validator
 {
-    public class BoardValidatorRow : BoardValidatorArea
+    public class RowsValidator 
     {
-        public BoardValidatorRow(List<int?> values) : base(values) { }
-
-        public override string IsValid()
+        public string IsValid(List<int?> values)
         {
-            var duplicate = Squares
+            var duplicate = new SudokuHelper().GetSquares(values)
                 .Where(c => c.Val != null)
                 .GroupBy(c => new { c.Val, c.Row })
                 .Where(g => g.Count() > 1);
