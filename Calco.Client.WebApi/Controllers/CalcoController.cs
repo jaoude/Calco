@@ -16,9 +16,9 @@ namespace Calco.Client.WebApi.Controllers
     public class CalcoController : ControllerBase
     {
         private readonly ILogger<CalcoController> _logger;
-        private readonly ISudokuSolver _sudokuSolver;
+        private readonly ISudokuService _sudokuSolver;
 
-        public CalcoController(ILogger<CalcoController> logger, ISudokuSolver sudokuSolver)
+        public CalcoController(ILogger<CalcoController> logger, ISudokuService sudokuSolver)
         {
             _logger = logger;
             _sudokuSolver = sudokuSolver;

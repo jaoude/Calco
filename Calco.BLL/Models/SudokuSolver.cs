@@ -1,19 +1,21 @@
 ﻿using Calco.BLL.Commands;
 using Calco.BLL.Services;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace Calco.BLL.Models
 {
-    public class Board
+
+    public class SudokuSolver : ISudokuSolver
     {     
         protected internal List<Square> Squares { get; set; }
         protected internal LinkedList<Square> LinkedSquares { get; set; }
 
-        private readonly List<int> _possibleValues = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+        private static readonly List<int> _possibleValues = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
         #region  Constructor
-        public Board(List<int?> values)
+        private void Init(List<int?> values)
         {
             Squares = new SudokuHelper().GetSquares(values);
             LinkedSquares = new LinkedList<Square>();
@@ -52,10 +54,9 @@ namespace Calco.BLL.Models
             }
         }
 
-        public void Solve()
+        public SudokuSolverResult Solve(List<int?> values)
         {
-            if (Squares.Count(sq => !sq.Val.HasValue) == 0)
-                return;
+            Init(values);
 
             var square = LinkedSquares.First;
             square.Value.Idx = 0;
@@ -63,6 +64,13 @@ namespace Calco.BLL.Models
             square.Value.Val = square.Value.Val.HasValue ? square.Value.Val.Value : square.Value.AllowedValues[square.Value.Idx];
             var manager = new CommandManager();
             manager.Invoke(new ToNextCommand(this, square, manager));
+
+            return new SudokuSolverResult()
+            {
+                Message = null,
+                Success = true,
+                Solution = this.Squares.Select(c => c.Val.Value).ToList()
+            };
         }
     }
 }

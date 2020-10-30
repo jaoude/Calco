@@ -26,7 +26,7 @@ namespace Calco.Client.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddTransient<ISudokuSolver, SudokuSolver>();
+            services.AddTransient<ISudokuService, SudokuService>();
             services.AddControllers();
         }
 

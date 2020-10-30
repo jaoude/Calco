@@ -8,11 +8,11 @@ namespace Calco.BLL.Commands
 {
     public class ToPreviousCommand : ICommand
     {
-        private Board _board;
+        private SudokuSolver _board;
         private LinkedListNode<Square> _squares;
         private CommandManager _manager;
         
-        public ToPreviousCommand(Board board, LinkedListNode<Square> squares, CommandManager manager)
+        public ToPreviousCommand(SudokuSolver board, LinkedListNode<Square> squares, CommandManager manager)
         {
             _board = board;
             _squares = squares;

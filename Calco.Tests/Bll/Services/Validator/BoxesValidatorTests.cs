@@ -7,11 +7,12 @@ using System.Collections.Generic;
 using Xunit;
 using static Calco.Common.Constants;
 
-namespace Calco.Tests.BoardValidatorTests
+namespace Calco.Tests.Bll.Services.Validator
 {
     public class BoxesValidatorTest
     {
-        public BoxesValidatorTest() { }
+        private readonly ISudokuHelper _sudokuHelper;
+        public BoxesValidatorTest() { _sudokuHelper = new SudokuHelper(); }
 
         [Fact]
         public void IsValid_ShouldReturnNull_WhenBoardIsValid()
@@ -31,7 +32,7 @@ namespace Calco.Tests.BoardValidatorTests
             };
 
             // Act/ Assert
-            new BoxesValidator().IsValid(values).Should().BeNull();
+            new BoxesValidator(_sudokuHelper).IsValid(values).Should().BeNull();
         }
 
         [Fact]
@@ -52,7 +53,7 @@ namespace Calco.Tests.BoardValidatorTests
             };
 
             // Act/ Assert
-            new BoxesValidator().IsValid(values).Should().Be(DUPLICATES_IN_BOX_ERROR);
+            new BoxesValidator(_sudokuHelper).IsValid(values).Should().Be(DUPLICATES_IN_BOX_ERROR);
         }
     }
 }

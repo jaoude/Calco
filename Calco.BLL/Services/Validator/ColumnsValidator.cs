@@ -4,11 +4,18 @@ using static Calco.Common.Constants;
 
 namespace Calco.BLL.Services.Validator
 {
-    public class ColumnsValidator
+    public class ColumnsValidator : IValidator
     {
+        private readonly ISudokuHelper _sudokuHelper;
+        
+        public ColumnsValidator(ISudokuHelper sudokuHelper)
+        {
+            _sudokuHelper = sudokuHelper;
+        }
+
         public string IsValid(List<int?> values)
         {
-            var duplicate = new SudokuHelper().GetSquares(values)
+            var duplicate = _sudokuHelper.GetSquares(values)
                 .Where(c => c.Val != null)
                 .GroupBy(c => new { c.Val, c.Col })
                 .Where(g => g.Count() > 1);

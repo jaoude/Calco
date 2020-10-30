@@ -11,10 +11,11 @@ using static Calco.Common.Constants;
 
 namespace Calco.BLL.Services
 {
-    public class SudokuSolver : ISudokuSolver
+    public class SudokuService : ISudokuService
     {
         public readonly ISudokuValidator _sudokuValidator;
-        public SudokuSolver(ISudokuValidator sudokuValidator)
+        public readonly ISudokuSolver _sudokuSolver;
+        public SudokuService(ISudokuValidator sudokuValidator)
         {
             _sudokuValidator = sudokuValidator;
         }
@@ -26,19 +27,13 @@ namespace Calco.BLL.Services
                 return new SudokuSolverResult()
                 {
                     Message = validate,
-                    Success = true,
+                    Success = false,
                     Solution = null
                 };
 
-            Board board = new Board(values.ToList());
-            board.Solve();
+            var result = _sudokuSolver.Solve(values);
 
-            return new SudokuSolverResult()
-            {
-                Message = null,
-                Success = true,
-                Solution = board.Squares.Select(c => c.Val.Value).ToList()
-            };
+            return result;
         }
     }
 }

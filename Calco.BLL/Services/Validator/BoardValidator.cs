@@ -5,7 +5,7 @@ using static Calco.Common.Constants;
 
 namespace Calco.BLL.Services.Validator
 {
-    public class BoardValidator
+    public class BoardValidator : IValidator
     {
         public string IsValid(List<int?> values) => values.Count == NBR_SQUARES_IN_SUDOKU ? null : WRONG_NBR_OF_SQUARES_ERROR;
     }

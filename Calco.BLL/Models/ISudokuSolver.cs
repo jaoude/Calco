@@ -1,15 +1,11 @@
-﻿using Calco.BLL.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Net.Http;
 using System.Text;
 
-namespace Calco.BLL.Services
+namespace Calco.BLL.Models
 {
     public interface ISudokuSolver
     {
         SudokuSolverResult Solve(List<int?> values);
-
     }
 }
