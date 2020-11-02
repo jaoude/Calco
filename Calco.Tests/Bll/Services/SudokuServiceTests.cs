@@ -13,17 +13,19 @@ namespace Calco.Tests.Bll.Services.Validator
     public class SudokuServiceTests
     {
         public readonly Mock<ISudokuValidator> _sudokuValidatorMock;
+        public readonly Mock<ISudokuSolver> _sudokuSolverMock;
         public readonly ISudokuService _sut;
         public readonly Fixture _fixture;
         public SudokuServiceTests() 
         {
             _sudokuValidatorMock = new Mock<ISudokuValidator>();
-            _sut = new SudokuService(_sudokuValidatorMock.Object);
+            _sudokuSolverMock = new Mock<ISudokuSolver>();
+            _sut = new SudokuService(_sudokuValidatorMock.Object, _sudokuSolverMock.Object);
             _fixture = new Fixture();
         }
 
         [Fact]
-        public void Solve_ShoudlReturnFailedResult_WhenValidatorReturnsError()
+        public void Solve_ShouldReturnFailedResult_WhenValidatorReturnsError()
         {
             // Arrange 
             var message = _fixture.Create<string>();
@@ -36,6 +38,20 @@ namespace Calco.Tests.Bll.Services.Validator
             result.Message.Should().Be(message);
             result.Success.Should().BeFalse();
             result.Solution.Should().BeNull();
+        }
+
+        [Fact]
+        public void Solve_ShouldMakeTheCorrectCalls_WhenCalled()
+        {
+            // Arrange 
+            var message = _fixture.Create<string>();
+
+            // Act
+            var result = _sut.Solve(It.IsAny<List<int?>>());
+
+            // Assert
+            _sudokuValidatorMock.Verify(x => x.Validate(It.IsAny<List<int?>>()), Times.Once());
+            _sudokuSolverMock.Verify(x => x.Solve(It.IsAny<List<int?>>()), Times.Once());
         }
     }
 }

@@ -15,9 +15,10 @@ namespace Calco.BLL.Services
     {
         public readonly ISudokuValidator _sudokuValidator;
         public readonly ISudokuSolver _sudokuSolver;
-        public SudokuService(ISudokuValidator sudokuValidator)
+        public SudokuService(ISudokuValidator sudokuValidator, ISudokuSolver sudokuSolver)
         {
             _sudokuValidator = sudokuValidator;
+            _sudokuSolver = sudokuSolver;
         }
 
         public SudokuSolverResult Solve(List<int?> values)

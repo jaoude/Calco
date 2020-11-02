@@ -1,67 +1,58 @@
-﻿//using Calco.BLL.Services.BoardValidator;
-//using NUnit.Framework;
-//using System.Collections.Generic;
-//using static Calco.Common.Constants;
+﻿using Calco.BLL.Services;
+using Calco.BLL.Services.Validator;
+using FluentAssertions;
+using System.Collections.Generic;
+using Xunit;
+using static Calco.Common.Constants;
 
-//namespace Calco.Tests.BoardValidatorTests
-//{
-//    public class BoardValidator81SquaresTest
-//    {
-//        private IBoardValidator _boardValidator81Squares;
+namespace Calco.Tests.Bll.Services.Validator
+{
+    public class BoardValidatorTests
+    {
+        private readonly ISudokuHelper _sudokuHelper;
+        public BoardValidatorTests() { _sudokuHelper = new SudokuHelper(); }
 
-//        public BoardValidator81SquaresTest()
-//        { }
-           
-//        [Test]
-//        public void AssertIsValid()
-//        {
-//            // Prepare
-//            List <int?> values = new List<int?>
-//            {
-//                5,      3,      4,      null,   7,      null,   null,   null,   null,
-//                6,      null,   null,   1,      9,      5,      null,   null,   null,
-//                5,      9,      8,      null,   null,   null,   null,   6,      null,
-//                8,      null,   null,   null,   6,      null,   null,   null,   3,
-//                4,      2,      6,      8,      5,      3,      7,      9,      1,
-//                7,      null,   null,   null,   2,      null,   null,   null,   6,
-//                null,   6,      null,   null,   null,   null,   2,      8,      null,
-//                null,   null,   null,   4,      1,      9,      null,   null,   5,
-//                null,   null,   null,   null,   8,      null,   null,   7,      9
-//            };
-            
-//            _boardValidator81Squares = new BoardValidator81Squares(values);
-            
-//            // Run
-//            var result = _boardValidator81Squares.IsValid();
+        [Fact]
+        public void IsValid_ShouldReturnNull_WhenBoardIsValid()
+        {
+            //Prepare
+            List<int?> values = new List<int?>
+            {
+                5,      3,      4,      null,   7,      null,   null,   null,   null,
+                6,      null,   null,   1,      9,      5,      null,   null,   null,
+                5,      9,      8,      null,   null,   null,   null,   6,      null,
+                8,      null,   null,   null,   6,      null,   null,   null,   3,
+                4,      2,      6,      8,      5,      3,      7,      9,      1,
+                7,      null,   null,   null,   2,      null,   null,   null,   6,
+                null,   6,      null,   null,   null,   null,   2,      8,      null,
+                null,   null,   null,   4,      1,      9,      null,   null,   5,
+                null,   null,   null,   null,   8,      null,   null,   7,      9
+            };
 
-//            // Assert
-//            Assert.IsNull(result);
-//        }
 
-//        [Test]
-//        public void AssertIsNotValid()
-//        {
-//            // Prepare
-//            List<int?> values = new List<int?>
-//            {
-//                5,      3,      4,      null,   7,      null,   null,   null,   null,
-//                6,      null,   null,   1,      9,      5,      null,   null,   null,
-//                5,      9,      8,      null,   null,   null,   null,   6,      null,
-//                8,      null,   null,   null,   6,      null,   null,   null,   3,
-//                4,      2,      6,      8,      5,      3,      7,      9,      1,
-//                7,      null,   null,   null,   2,      null,   null,   null,   6,
-//                null,   6,      null,   null,   null,   null,   2,      8,      null,
-//                null,   null,   null,   4,      1,      9,      null,   null,   5,
-//                null,   null,   null,   null,   8,      null,   null,   7
-//            };
+            // Act/ Assert
+            new BoardValidator().IsValid(values).Should().BeNull();
+        }
 
-//            _boardValidator81Squares = new BoardValidator81Squares(values);
+        [Fact]
+        public void IsValid_ShouldReturnError_WhenBoardIsInValid()
+        {
+            // Prepare
+            List<int?> values = new List<int?>
+            {
+                5,      3,      4,      null,   7,      null,   null,   null,   null,
+                6,      null,   null,   1,      9,      5,      null,   null,   null,
+                5,      9,      8,      null,   null,   null,   null,   6,      null,
+                8,      null,   null,   null,   6,      null,   null,   null,   3,
+                4,      2,      6,      8,      5,      3,      7,      9,      1,
+                7,      null,   null,   null,   2,      null,   null,   null,   6,
+                null,   6,      null,   null,   null,   null,   2,      8,      null,
+                null,   null,   null,   4,      1,      9,      null,   null,   5,
+                null,   null,   null,   null,   8,      null,   null,   7
+            };
 
-//            // Run
-//            var result = _boardValidator81Squares.IsValid();
-
-//            // Assert
-//            Assert.AreEqual(result, WRONG_NBR_OF_SQUARES_ERROR);
-//        }
-//    }
-//}
+            // Act/ Assert
+            new BoardValidator().IsValid(values).Should().Be(WRONG_NBR_OF_SQUARES_ERROR);
+        }
+    }
+}
